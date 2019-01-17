@@ -28,7 +28,7 @@
 
 Program
     : Statements EOF
-        { return stack.pop(); }
+        { return pop(); }
     ;
 Statements
     : Statement
