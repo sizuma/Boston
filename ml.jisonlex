@@ -24,6 +24,7 @@ Program
     ;
 Statements
     : Statement
+    	{ $$ = Array.isArray($1) ? $1 : [$1]}
     | Statements Statement
         { $$ = [].concat($1, $2); }
     ;

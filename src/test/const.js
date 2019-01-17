@@ -2,4 +2,5 @@ const assert = require('assert');
 
 const lang = require('../index');
 
-assert(lang('1'), 1);
+assert.deepEqual(lang('1'), [1]);
+assert.deepEqual(lang('1 2'), [1, 2]);
