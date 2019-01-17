@@ -12,6 +12,14 @@
 /lex
 
 %{
+	const stack = [];
+
+	const push = value => {
+		stack.push(value);
+	}
+	const pop = () => {
+		return stack.pop();
+	}
 %}
 
 %start Program
@@ -20,13 +28,11 @@
 
 Program
     : Statements EOF
-        { return $1 }
+        { return stack.pop(); }
     ;
 Statements
     : Statement
-    	{ $$ = Array.isArray($1) ? $1 : [$1]}
     | Statements Statement
-        { $$ = [].concat($1, $2); }
     ;
 Statement
     : Expression
@@ -34,6 +40,7 @@ Statement
     ;
 Expression
 	: Number
+		{ push($1) }
 	;
 Number
     : NUMBER
