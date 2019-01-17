@@ -29,8 +29,12 @@ Statements
         { $$ = [].concat($1, $2); }
     ;
 Statement
-    : Number
+    : Expression
+    | Command
     ;
+Expression
+	: Number
+	;
 Number
     : NUMBER
         { $$ = Number(yytext); }
