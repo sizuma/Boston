@@ -5,12 +5,15 @@
 
 %%
 \s+						/* skip whitespace */
+"defun"					return 'DEFUN';
 [0-9]+("."[0-9]+)?\b	return 'NUMBER';
-[a-zA-Z_][a-zA-Z0-9]*	return 'ID';
+[a-zA-Z][a-zA-Z0-9]*	return 'ID';
 "["						return 'L_S_BRA';
 "]"						return 'R_S_BRA';
 "{"						return 'L_BRA';
 "}"						return 'R_BRA';
+"("						return 'L_PRA';
+")"						return 'R_PRA';
 ","						return 'COMMA';
 <<EOF>>					return 'EOF';
 
@@ -18,7 +21,7 @@
 
 %{
 	const stack = [];
-
+	const table = {};
 	const push = value => {
 		stack.push(value);
 	}
@@ -114,6 +117,12 @@
 			} else return false;
 		}
 	}
+
+	class Function {
+		constructor(body) {
+			this.body = body;
+		}
+	}
 %}
 
 %start Program
@@ -134,6 +143,18 @@ Statement
     : Expression
     | Command
     ;
+Command
+	: Defun
+	;
+Defun
+	: DEFUN Id L_PRA R_PRA L_BRA DefunBody R_BRA
+			{
+				table[$2] = new Function($6);
+			}
+	;
+DefunBody
+	: Statements
+	;
 Expression
 	: Term
 	;
@@ -176,3 +197,7 @@ Number
     : NUMBER
         { $$ = new MyNumber(Number(yytext)); }
     ;
+Id
+	: ID
+		{ $$ = yytext; }
+	;
