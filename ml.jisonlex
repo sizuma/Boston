@@ -7,8 +7,10 @@
 \s+						/* skip whitespace */
 [0-9]+("."[0-9]+)?\b	return 'NUMBER';
 [a-zA-Z_][a-zA-Z0-9]*	return 'ID';
-"["						return 'L_BRA';
-"]"						return 'R_BRA';
+"["						return 'L_S_BRA';
+"]"						return 'R_S_BRA';
+"{"						return 'L_BRA';
+"}"						return 'R_BRA';
 ","						return 'COMMA';
 <<EOF>>					return 'EOF';
 
@@ -54,9 +56,9 @@ Factor
     		{ push($1) }
     ;
 Tuple
-	: L_BRA R_BRA
+	: L_S_BRA R_S_BRA
 			{ $$ = []; }
-	| L_BRA TupleBody R_BRA
+	| L_S_BRA TupleBody R_S_BRA
 			{ $$ = $2; }
 	;
 TupleBody
