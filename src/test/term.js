@@ -12,3 +12,8 @@ assert.deepEqual(lang('{1}').asJValue(), new Set([1]));
 assert.deepEqual(lang('{1, 1}').asJValue(), new Set([1]));
 assert.deepEqual(lang('{1, 2}').asJValue(), new Set([1, 2]));
 assert.deepEqual(lang('{1, 2}').asJValue(), new Set([2, 1]));
+
+assert.deepEqual(lang('{{}, {}}').asJValue(), new Set([new Set([])]));
+assert.deepEqual(lang('{{1}, {1}}').asJValue(), new Set([new Set([1])]));
+assert.deepEqual(lang('{[], []}').asJValue(), new Set([[]]));
+assert.deepEqual(lang('{[1], [1]}').asJValue(), new Set([[1]]));

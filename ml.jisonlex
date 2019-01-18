@@ -29,16 +29,22 @@
 	class MyNumber {
 		constructor(value) {
 			this.jValue = value;
+			this.type = 'number';
 		}
 
 		asJValue() {
 			return this.jValue;
+		}
+
+		equals(other) {
+			return other.type === 'number' && other.jValue === this.jValue
 		}
 	}
 
 	class MyTuple {
 		constructor(baseArray) {
 			this.jValue = [].concat(baseArray);
+			this.type = 'tuple';
 		}
 
 		static empty() {
@@ -48,10 +54,38 @@
 		asJValue() {
 			return this.jValue.map(each => each.asJValue());
 		}
+
+		equals(other) {
+			return other.type === 'tuple' &&
+				this.length === other.length &&
+				this.jValue.reduce((acc, current, index) => {
+					return acc && current.equals(other.jValue[index])
+				}, true)
+		}
+
+		includes(elem) {
+			return !!this.jValue.find(other => {
+				return other.equals(elem);
+			});
+		}
+
+		push(elem) {
+			this.jValue.push(elem);
+		}
+
+		get length() {
+			return this.jValue.length;
+		}
 	}
 	class ExtensionSet {
 		constructor(array) {
-			this.jValue = new global.Set(array);
+			const tuple = new MyTuple([]);
+			array.forEach(each => {
+				if(!tuple.includes(each)) tuple.push(each);
+			});
+			this.jValue = new global.Set(tuple.jValue);
+			this.type = 'set';
+			this.isFinite = true;
 		}
 
 		asJValue() {
@@ -60,6 +94,24 @@
 				result.push(each.asJValue());
 			});
 			return new global.Set(result);
+		}
+
+		get size() {
+			return this.jValue.size;
+		}
+
+		equals(other) {
+			if (this.type === other.type && this.size === other.size) {
+				let result = true;
+				this.jValue.forEach(each => {
+					let contains = false
+					other.jValue.forEach(eachOther => {
+						contains = contains || each.equals(eachOther);
+					});
+					result = result && contains;
+				})
+				return result;
+			} else return false;
 		}
 	}
 %}
