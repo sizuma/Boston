@@ -6,6 +6,7 @@
 %%
 \s+						/* skip whitespace */
 "defun"					return 'DEFUN';
+"var"                   return 'VAR';
 [0-9]+("."[0-9]+)?\b	return 'NUMBER';
 [a-zA-Z][a-zA-Z0-9]*	return 'ID';
 "["						return 'L_S_BRA';
@@ -15,6 +16,7 @@
 "("						return 'L_PRA';
 ")"						return 'R_PRA';
 ","						return 'COMMA';
+"="                     return 'EQUAL';
 <<EOF>>					return 'EOF';
 
 /lex
@@ -29,6 +31,12 @@
 		return stack.pop();
 	}
 
+    const declare = (name, value) => {
+        table[name] = value;
+    };
+    const get = name => {
+        return table[name];
+    }
 	class MyNumber {
 		constructor(value) {
 			this.jValue = value;
@@ -145,16 +153,23 @@ Statement
     ;
 Command
 	: Defun
+	| Var
 	;
 Defun
 	: DEFUN Id L_PRA R_PRA L_BRA DefunBody R_BRA
 			{
-				table[$2] = new Function($6);
+			    declare($2, new Function($6));
 			}
 	;
 DefunBody
 	: Statements
 	;
+Var
+    : VAR Id EQUAL Expression
+            {
+                declare($2, $4);
+            }
+    ;
 Expression
 	: Term
 	;
@@ -166,6 +181,7 @@ Term
 	;
 Factor
 	: Number
+	| Ref
     ;
 Tuple
 	: L_S_BRA R_S_BRA
@@ -201,3 +217,7 @@ Id
 	: ID
 		{ $$ = yytext; }
 	;
+Ref
+    : Id
+        { push(get($1)); }
+    ;
