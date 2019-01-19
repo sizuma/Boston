@@ -56,15 +56,18 @@ Command
 	;
 Defun
 	: DEFUN Id L_PRA R_PRA L_BRA DefunBody R_BRA
+	    { $$ = () => runtime.scope.set($2, $6); }
 	;
 DefunBody
 	: Statements
 	;
 Var
     : VAR Id EQUAL Expression
+        { $$ = () => runtime.scope.set($2, $4()); }
     ;
 Expression
 	: Term
+	| Call
 	;
 Term
 	: Factor
@@ -74,6 +77,12 @@ Term
 Factor
 	: Number
 	| Ref
+    ;
+Call
+    : Id L_PRA R_PRA
+        { $$ = () => runtime.call($1, null); }
+    | Id L_PRA Expression R_PRA
+        { $$ = () => runtime.call($1, $3()); }
     ;
 Tuple
 	: L_S_BRA R_S_BRA
@@ -111,4 +120,5 @@ Id
 	;
 Ref
     : Id
+        { $$ = () => runtime.scope.get($1);}
     ;
