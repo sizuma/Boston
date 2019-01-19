@@ -12,6 +12,26 @@ const Values = {
         toString() {
             return this.value;
         }
+
+        plus(other) {
+            if (other.type !== 'number') super.plus(other);
+            return new Values.Number(this.value + other.value);
+        }
+
+        minus(other) {
+            if (other.type !== 'number') super.plus(other);
+            return new Values.Number(this.value - other.value);
+        }
+
+        multi(other) {
+            if (other.type !== 'number') super.plus(other);
+            return new Values.Number(this.value * other.value);
+        }
+
+        div(other) {
+            if (other.type !== 'number') super.plus(other);
+            return new Values.Number(this.value / other.value);
+        }
     },
     Tuple: class extends Value {
         constructor(array) {

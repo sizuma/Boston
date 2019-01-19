@@ -9,6 +9,10 @@
 "var"                   return 'VAR';
 "&"                     return 'AND';
 "|"                     return 'OR';
+"+"                     return 'PLUS';
+"-"                     return 'MINUS';
+"*"                     return 'MULTI';
+"/"                     return 'DIV';
 [0-9]+("."[0-9]+)?\b	return 'NUMBER';
 [a-zA-Z][a-zA-Z0-9]*	return 'ID';
 "["						return 'L_S_BRA';
@@ -28,7 +32,7 @@
     const Values = runtime.Values;
 %}
 
-%left AND OR
+%left AND OR PLUS MINUS MULTI DIV
 
 %start Program
 
@@ -73,16 +77,25 @@ Expression
 	: Term
 	| Call
 	| Or
+	| Plus
+	| Minus
 	;
 Term
 	: Factor
 	| Tuple
 	| Set
 	| And
+	| Multi
+	| Div
 	;
 Factor
 	: Number
 	| Ref
+	| PrimeExpression
+    ;
+PrimeExpression
+    : L_PRA Expression R_PRA
+        { $$ = $2; }
     ;
 Call
     : Id L_PRA R_PRA
@@ -116,12 +129,28 @@ ExtensionSet
 	| ExtensionSet COMMA Expression
 	    { $$ = () => $1().add($3()); }
 	;
+Plus
+    : Expression PLUS Expression
+        { $$ = () => $1().plus($3()); }
+    ;
+Minus
+    : Expression MINUS Expression
+        { $$ = () => $1().minus($3()); }
+    ;
+Multi
+    : Term MULTI Term
+        { $$ = () => $1().multi($3()); }
+    ;
+Div
+    : Term DIV Term
+        { $$ = () => $1().div($3()); }
+    ;
 Or
     : Expression OR Expression
         { $$ = () => $1().or($3()); }
     ;
 And
-    : Expression AND Expression
+    : Term AND Term
         { $$ = () => $1().and($3()); }
     ;
 Number

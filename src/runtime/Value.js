@@ -23,6 +23,22 @@ class Value {
     and(other) {
         throw 'and operator cannot apply to '+this.toString();
     }
+
+    plus(other) {
+        throw '+ operator cannot apply to '+this.toString();
+    }
+
+    minus(other) {
+        throw '- operator cannot apply to '+this.toString();
+    }
+
+    multi(other) {
+        throw '* operator cannot apply to '+this.toString();
+    }
+
+    div(other) {
+        throw '/ operator cannot apply to '+this.toString();
+    }
 }
 
 module.exports = Value;

@@ -41,3 +41,29 @@ console.log(lang(`
 console.log(lang(`
     {1, 2, 3} & {2, 3, 4}
 `).toString());
+
+console.log(lang(`
+    1+2
+`).toString());
+
+console.log(lang(`
+    1-2
+`).toString());
+
+console.log(lang(`
+    1/2
+`).toString());
+
+console.log(lang(`
+    1*2
+`).toString());
+
+console.log(lang(`
+    1+1*2
+`).toString());
+
+console.log(lang(`
+    (1+1)*2
+    f
+    (1)
+`).toString());
