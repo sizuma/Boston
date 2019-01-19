@@ -87,6 +87,21 @@ const Values = {
             if (reduced.endsWith(", ")) reduced = reduced.substring(0, reduced.length-2);
             return reduced+"}";
         }
+
+        or(other) {
+            let newSet = Values.ExtensionSet.empty();
+            this.value.forEach(each => newSet = newSet.add(each));
+            other.value.forEach(each => newSet = newSet.add(each));
+            return newSet;
+        }
+
+        and(other) {
+            let newSet = Values.ExtensionSet.empty();
+            this.value.forEach(each => {
+                if (other.has(each)) newSet = newSet.add(each);
+            });
+            return newSet;
+        }
     }
 };
 

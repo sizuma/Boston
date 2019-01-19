@@ -15,6 +15,14 @@ class Value {
     get value() {
         return this._value;
     }
+
+    or(other) {
+        throw 'or operator cannot apply to '+this.toString();
+    }
+
+    and(other) {
+        throw 'and operator cannot apply to '+this.toString();
+    }
 }
 
 module.exports = Value;

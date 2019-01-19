@@ -7,6 +7,8 @@
 \s+						/* skip whitespace */
 "defun"					return 'DEFUN';
 "var"                   return 'VAR';
+"&"                     return 'AND';
+"|"                     return 'OR';
 [0-9]+("."[0-9]+)?\b	return 'NUMBER';
 [a-zA-Z][a-zA-Z0-9]*	return 'ID';
 "["						return 'L_S_BRA';
@@ -25,6 +27,8 @@
     const runtime = global.bostonRuntime;
     const Values = runtime.Values;
 %}
+
+%left AND OR
 
 %start Program
 
@@ -68,11 +72,13 @@ Var
 Expression
 	: Term
 	| Call
+	| Or
 	;
 Term
 	: Factor
 	| Tuple
 	| Set
+	| And
 	;
 Factor
 	: Number
@@ -110,6 +116,14 @@ ExtensionSet
 	| ExtensionSet COMMA Expression
 	    { $$ = () => $1().add($3()); }
 	;
+Or
+    : Expression OR Expression
+        { $$ = () => $1().or($3()); }
+    ;
+And
+    : Expression AND Expression
+        { $$ = () => $1().and($3()); }
+    ;
 Number
     : NUMBER
         { $$ = () => new Values.Number(Number(yytext)); }

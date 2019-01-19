@@ -33,3 +33,11 @@ console.log(lang(`
     
     f()
 `).toString());
+
+console.log(lang(`
+    {1, 2, 3} | {3, 4, 2}
+`).toString());
+
+console.log(lang(`
+    {1, 2, 3} & {2, 3, 4}
+`).toString());
