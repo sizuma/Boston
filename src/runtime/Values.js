@@ -1,21 +1,4 @@
-class Value {
-    constructor(type, value) {
-        this._type = type;
-        this._value = value;
-    }
-
-    equals(other) {
-        return this.type === other.type;
-    }
-
-    get type() {
-        return this._type;
-    }
-
-    get value() {
-        return this._value;
-    }
-}
+const Value = require('./Value');
 
 const Values = {
     Number: class extends Value {
@@ -107,6 +90,4 @@ const Values = {
     }
 };
 
-module.exports = {
-    Values,
-};
+module.exports = Values;
